@@ -1,0 +1,30 @@
+
+.headercontainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border: 1px solid black;
+    align-items: center;
+    background-color:black;
+    color: white;
+    padding: 4px;
+    background-image: url("https://cdn4.vectorstock.com/i/1000x1000/49/83/space-with-stars-background-galaxy-vector-11544983.jpg");
+
+    border-radius: 12px;
+}
+h3{
+    margin-right: 22px;
+    font-size: 26px;
+    text-decoration: underline;
+}
+.nameNav{
+    margin-left: 22px;
+    font-weight: bold;
+    font-size: large;
+}
+.navImage {
+    margin-left: 24px;
+    height: 100px;
+    width: 100px;
+    background-color: lightgrey;
+}

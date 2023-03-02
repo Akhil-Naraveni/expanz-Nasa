@@ -1,0 +1,46 @@
+.result-scroll{
+    display: flex;
+    flex-direction: row;
+    overflow-y: auto;
+}
+.container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.content{
+    width: 50vw;
+    padding: 6px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+.media{
+    width: 50vw;
+    padding: 6px;
+}
+.spotImage{
+    width: 45vw;
+    height: 42vh;
+    box-shadow: 8px 4px 4px 0px rgb(208, 133, 133);
+}
+.result-card{
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.imagecard{
+    width: 24vw;
+    height: 27vh;
+    margin-right: 6px;
+}
+.result-scroll-down{
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+}
+
+.imagecard:hover{
+    width: 21vw;
+    height: 26vh;
+    opacity: 0.75;
+}
