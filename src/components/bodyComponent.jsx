@@ -8,44 +8,79 @@ function BodyComponent() {
     const [previousResults, setPreviousResults] = useState([]);
     const [olderResults, setOlderResults] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const [dates, setDates] = useState(["2022-02-01", "2022-02-07"])
+    const [flag, setFlag] = useState(true)
     useEffect(() => {
-        fetchLatestResult();
+        
         fetchPreviousResults();
         fetchOlderResults();
-    }, []);
+    }, [dates]);
+    if(flag){
+        async function fetchLatestResult() {
+            const response = await fetch(API_URL);
+            const result = await response.json();
+            setLoading(false);
+            setLatestResult(result)
+            
+        }
+        fetchLatestResult();
+        setFlag(false)
 
-    async function fetchLatestResult() {
-        const response = await fetch(API_URL);
-        const result = await response.json();
-        setLatestResult(result);
-        setLoading(false);
     }
+        
+
+    
 
     async function fetchPreviousResults() {
+        console.log("triggered previous")
         const response = await fetch(
-            `${API_URL}&start_date=2022-02-01&end_date=2022-02-07`
+            `${API_URL}&start_date=${dates[0]}&end_date=${dates[1]}`
         );
         const results = await response.json();
+        results.pop()
         setPreviousResults(results);
+
     }
 
     async function fetchOlderResults() {
         const response = await fetch(
-            `${API_URL}&start_date=2022-01-01&end_date=2022-01-28`
+            `${API_URL}&start_date=2022-02-01&end_date=2022-02-22`
         );
         const results = await response.json();
         setOlderResults(results);
-    }
 
+
+    }
+   
 
     function handleThumbnailClick(result) {
-        setLatestResult(result)
-        
-        if(!previousResults.includes(result)){
-            previousResults.pop()
-        setPreviousResults([result,...previousResults])
+        console.log(result.date)
+        var d = new Date(result.date);
+        d.setDate(d.getDate() - 7);
+        d.setMonth(d.getMonth() + 1 - 0);
+        var curr_date = d.getDate();
+        var curr_month = d.getMonth();
+        var curr_year = d.getFullYear();
+        let parsedDate;
+        if (curr_month < 10 && curr_date < 10) {
+            parsedDate = curr_year + "-" + "0" + curr_month + "-" + "0" + curr_date
+        } else if (curr_month < 10 && curr_date > 9) {
+            parsedDate = curr_year + "-" + "0" + curr_month + "-" + curr_date;
+        } else if (curr_month > 9 && curr_date < 10) {
+            parsedDate = curr_year + "-" + curr_month + "-" + "0" + curr_date;
+        } else {
+            parsedDate = curr_year + "-" + curr_month + "-" + curr_date
         }
+        console.log(parsedDate)
+        let lastSevthdate = parsedDate
+        setDates([lastSevthdate, result.date])
+        // fetchPreviousResults(dates)
+        console.log(dates)
+        setLatestResult(result)
+        setLoading(false)
+
+
+       
     }
 
     // let desc = latestResult.explanation.split(".")[0] + "," + latestResult.explanation.split(".")[1] + "," + latestResult.explanation.split(".")[2] + "," + latestResult.explanation.split(".")[3]
@@ -66,7 +101,7 @@ function BodyComponent() {
                             <div className="media">
                                 {latestResult.media_type === "image" ?
                                     <img className="spotImage" src={latestResult.url} alt="imageposter" /> :
-                                    <iframe allowFullScreen className="spotImage" allow="autoplay" src={latestResult.url} ></iframe>
+                                    <iframe allowFullScreen className="spotImage" title={latestResult.title} allow="autoplay" src={latestResult.url} ></iframe>
                                     // <video height="40vh" width="42vw" className="spotImage" controls>
                                     //     <source src={latestResult.url} type="video/mp4" alt="video" />
                                     // </video>
@@ -103,7 +138,7 @@ function BodyComponent() {
                                 key={result.date}
                                 onClick={() => handleThumbnailClick(result)}
                             >
-                                {result.media_type == "image" ? <img className="imagecard" src={result.url} alt={result.title} />
+                                {result.media_type === "image" ? <img className="imagecard" src={result.url} alt={result.title} />
                                     : <img className="imagecard" src={result.thumbnail_url} alt={result.title} />}
                                 <h4>{result.title}</h4>
                                 <p>Date: {result.date}</p>
