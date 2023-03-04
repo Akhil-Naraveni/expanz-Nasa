@@ -9,27 +9,28 @@ function BodyComponent() {
     const [olderResults, setOlderResults] = useState([]);
     const [loading, setLoading] = useState(true);
     const [dates, setDates] = useState(["2022-02-01", "2022-02-07"])
+    const [popup, setPopup] = useState(false)
     const [flag, setFlag] = useState(true)
     useEffect(() => {
-        
+
         fetchPreviousResults();
         fetchOlderResults();
     }, [dates]);
-    if(flag){
+    if (flag) {
         async function fetchLatestResult() {
             const response = await fetch(API_URL);
             const result = await response.json();
             setLoading(false);
             setLatestResult(result)
-            
+
         }
         fetchLatestResult();
         setFlag(false)
 
     }
-        
 
-    
+
+
 
     async function fetchPreviousResults() {
         console.log("triggered previous")
@@ -51,7 +52,7 @@ function BodyComponent() {
 
 
     }
-   
+
 
     function handleThumbnailClick(result) {
         console.log(result.date)
@@ -78,9 +79,11 @@ function BodyComponent() {
         console.log(dates)
         setLatestResult(result)
         setLoading(false)
+        setPopup(true)
 
-
-       
+    }
+    const handlePopup = () => {
+        setPopup(false)
     }
 
     // let desc = latestResult.explanation.split(".")[0] + "," + latestResult.explanation.split(".")[1] + "," + latestResult.explanation.split(".")[2] + "," + latestResult.explanation.split(".")[3]
@@ -129,6 +132,34 @@ function BodyComponent() {
                         ))}
                     </div>
                 </div>
+                {popup ? <div className="popupcontainer">
+                    <div style={{ zIndex: 1 }} className="popupCard">
+                        <div className="textContent">
+                           <b><p>Title</p></b>
+                            <p>{latestResult.title}</p>
+                            <b><span>Description</span></b>
+                        <p>{latestResult.explanation.slice(0,300)} .</p> 
+                        <div className="bottomPopup">
+                            <div><b> <p>Date</p></b> 
+                        <p>{latestResult.date}</p></div>
+                       <div><b><p>Author</p></b>
+                       <p>{latestResult.copyright}</p></div>
+                        
+                        </div>
+                        </div>
+                        <hr/>
+                        <div className="imgContent">
+                            {latestResult.media_type === "image" ?
+                                <img className="spotImagePop" src={latestResult.url} alt="imageposter" /> :
+                                <iframe allowFullScreen className="spotImagePop" title={latestResult.title} allow="autoplay" src={latestResult.url} ></iframe>
+
+                            }
+
+                        </div>
+                        
+                    </div>
+                    <div><button className="popupbtn" onClick={handlePopup}><b>Okay</b></button></div>
+                </div> : ""}
                 <div className="older-results-section">
                     <h3>Older Results</h3>
                     <div className="result-scroll-down">
@@ -146,7 +177,9 @@ function BodyComponent() {
                         ))}
                     </div>
                 </div>
+
             </header>
+
         </div>
     )
 }
